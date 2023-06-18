@@ -1,0 +1,41 @@
+name: Run butane to generate ignition file
+on:
+  push:
+    branches:
+      - main  # Adjust this branch name if needed
+  pull_request:
+    branches:
+      - main  # Adjust this branch name if needed
+
+env:
+  RELEASE_TAG: v1.0.0  # Modify the release tag/version number
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use the appropriate runner image for your project
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Butane
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y butane
+
+      - name: Create Release Directory
+        run: |
+          mkdir release
+
+      - name: Generate Ignition
+        run: |
+          make generate_ignition
+          cp k8s-node.ign release/
+
+      - name: Create Release and Upload Ignition File
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.repository.releases_url }}
+          asset_path: ./release/k8s-node.ign
+          asset_name: k8s-node.ign
+          asset_content_type: application/octet-stream
