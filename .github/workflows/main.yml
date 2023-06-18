@@ -38,4 +38,6 @@ jobs:
           asset_path: ./release/k8s-node.ign
           asset_name: k8s-node.ign
           asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
