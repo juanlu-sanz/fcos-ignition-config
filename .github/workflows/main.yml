@@ -13,6 +13,8 @@ env:
 jobs:
   build:
     runs-on: macos-latest  # Use the appropriate runner image for macOS
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
