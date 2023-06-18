@@ -12,7 +12,7 @@ env:
 
 jobs:
   build:
-    runs-on: fedora-latest  # Use the appropriate runner image for Fedora
+    runs-on: macos-latest  # Use the appropriate runner image for macOS
 
     steps:
       - name: Checkout repository
@@ -20,7 +20,7 @@ jobs:
 
       - name: Install Butane
         run: |
-          sudo dnf install -y butane
+          brew install butane
 
       - name: Create Release Directory
         run: |
@@ -38,3 +38,4 @@ jobs:
           asset_path: ./release/k8s-node.ign
           asset_name: k8s-node.ign
           asset_content_type: application/octet-stream
+
