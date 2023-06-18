@@ -12,7 +12,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Use the appropriate runner image for your project
+    runs-on: fedora-latest  # Use the appropriate runner image for Fedora
 
     steps:
       - name: Checkout repository
@@ -20,8 +20,7 @@ jobs:
 
       - name: Install Butane
         run: |
-          sudo apt-get update
-          sudo apt-get install -y butane
+          sudo dnf install -y butane
 
       - name: Create Release Directory
         run: |
