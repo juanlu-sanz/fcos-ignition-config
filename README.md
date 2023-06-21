@@ -12,6 +12,22 @@ I have a small cluster at home, and ever since I read about Red Hat CoreOS and F
 > These are my configs for my own servers!
 > I'll try to keep everything as "boilerplate-y" as possible, and make an extra effort to mark every single config someone else might need to change for them to work, but it's up to you to do it!
 
+## First things first, download Fedora CoreOS
+
+Either from [their website](https://fedoraproject.org/coreos/download/?stream=stable#baremetal)
+
+or
+
+```bash
+ podman run --security-opt label=disable --pull=always --rm -v .:/data -w /data quay.io/coreos/coreos-installer:release download -s stable -p metal -f iso
+```
+
+In any case, I like to rename the ISOs in case more pop up later (they will)
+
+```bash
+mv fedora-coreos-38.20230527.3.0-live.x86_64.iso fcosFromFedora.iso
+```
+
 ## My current setup
 
 Long story short: Fedora CoreOS uses something called an `ignition` file (.ign) to setup your PC, instead of having to set it up manually on every setup. These ignition files are glorified .json files that are generated from `butane` files (which are, in turn, glorified .yaml files)
@@ -64,9 +80,9 @@ flowchart LR
 
 To install you can do either of two things:
 
-#### The easy way: pass the URL on every installation
+#### Option A) The easy way: pass the URL on every installation
 
-You simply boot your Fedora CoreOS live USB on your server, wait for it to "boot" and run
+You simply burn the ISO you just downloaded, boot your Fedora CoreOS live USB on your server, wait for it to "boot" and run
 
 ```bash
 lsblk  # To make sure which drive is which on your server
@@ -85,7 +101,7 @@ sudo coreos-installer install /dev/sda \
 
 Now if you make changes, you only need to push to git, a GH action will generate the appropiate ignition file and publish it, run the installer again and you have a brand new install!
 
-### The automatic way: make the installer pull the config on every install
+#### Option B) The automatic way: make the installer pull the config on every install
 
 This is only if you want to reinstall often! (ignition testing for example)
 
@@ -123,3 +139,20 @@ flowchart LR
 ```
 
 The graph is more complex, but it certainly makes life easier! Now instead of having to plug a keyboard on the server and type the install command, just running the ISO will reinstall Fedora CoreOS with the latest version of your ignition file!
+
+To do this, on your workstation run
+
+```bash
+podman run --security-opt label=disable --pull=always --rm -v .:/data -w /data quay.io/coreos/coreos-installer:release iso ignition embed -i config.ign -o myCustomFocs.iso focsFromFedora.iso
+```
+
+This is basically embedding the ISO with a small config saying "hey! when you live boot, just autoinstall there 👉🖴 with this ignition file 📝"
+
+Now burn `myCustomFocs.iso` on a USB drive and boot from it! It'll automatically install!
+
+## References
+
+- [Official Fedora CoreOS docs](https://docs.fedoraproject.org/en-US/fedora-coreos/bare-metal/#_customizing_installation)
+- [Official CoreOS installer docs](https://coreos.github.io/coreos-installer/cmd/install/)
+- [Red Hat blog post on a basic install](https://developers.redhat.com/blog/2020/03/12/how-to-customize-fedora-coreos-for-dedicated-workloads-with-ostree#the_rpm_ostree_tool)
+- [Tommy Tran's excellent youtube guide](https://www.youtube.com/watch?v=2eEiVYelFTo)
