@@ -31,10 +31,13 @@ jobs:
       - name: Generate Ignition
         run: |
           make generate_ignition
-          cp k8s-node.ign release/
+          make generate_live_ignition
+          cp k8s-node.ign iso-config.ign release/
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: release/k8s-node.ign
+          files: |
+            release/k8s-node.ign
+            release/iso-config.ign
           tag_name: v1.0.0
