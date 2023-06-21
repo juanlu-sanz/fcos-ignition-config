@@ -1,0 +1,10 @@
+variant: fcos
+version: 1.4.0
+storage:
+  files:
+    - path: /etc/coreos/installer.d/custom.yaml
+      contents:
+        inline: |
+          dest-device: /dev/nvme0n1
+          ignition-url: https://github.com/juanlu-sanz/fcos-ignition-config/releases/latest/download/k8s-node.ign
+
